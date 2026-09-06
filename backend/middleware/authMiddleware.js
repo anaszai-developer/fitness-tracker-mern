@@ -4,31 +4,31 @@ const protect = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
-    console.log("AUTH HEADER:", authHeader);
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader) {
       return res.status(401).json({
         message: "Token missing",
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.startsWith("Bearer ")
+      ? authHeader.split(" ")[1]
+      : authHeader;
 
-    console.log("TOKEN:", token);
+    if (!token) {
+      return res.status(401).json({
+        message: "Token missing",
+      });
+    }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    console.log("DECODED:", decoded);
+    console.log("DECODED TOKEN:", decoded);
 
     req.user = decoded;
 
     next();
-
   } catch (error) {
-    console.log("JWT ERROR:", error.message);
+    console.error("AUTH ERROR:", error);
 
     return res.status(401).json({
       message: "Invalid or expired token",

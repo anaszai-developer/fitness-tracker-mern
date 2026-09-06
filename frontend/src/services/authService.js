@@ -1,7 +1,8 @@
 import axios from "axios";
 
-// Localhost ke bajaye Vercel environment variable use karein
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+
 const API_URL = `${BASE_URL}/api/auth`;
 
 const register = async (userData) => {
@@ -21,6 +22,7 @@ const login = async (userData) => {
 
   if (response.data.token) {
     localStorage.setItem("token", response.data.token);
+
     localStorage.setItem(
       "user",
       JSON.stringify(response.data.user)
